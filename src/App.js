@@ -1,25 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import useRandomNumber from "./hooks/useRandomNumber";
+import useFetch from "./hooks/useFetch";
+
+import PhotoWrap from "./components/PhotoWrap";
+import SinglePhoto from "./components/SinglePhoto";
+
+import "./App.css";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const rmNumb = useRandomNumber();
+  const { users, loading, error } = useFetch();
+
+  let content;
+
+  if (error) {
+    return <p>Error!</p>;
+  }
+
+  if (loading) {
+    content = <div>loading</div>;
+  } else if (!loading && users) {
+    content = (
+      <PhotoWrap className="flexDiv">
+        {rmNumb.map((number, index) => (
+          <SinglePhoto key={index} link={`${users[number].picture.large}`} />
+        ))}
+      </PhotoWrap>
+    );
+  }
+
+  return <div className="mainDiv">{content}</div>;
 }
 
 export default App;
